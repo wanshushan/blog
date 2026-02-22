@@ -1,4 +1,4 @@
-import { tr } from "@i18n/languages/tr";
+// import { tr } from "@i18n/languages/tr";
 import type {
 	ExpressiveCodeConfig,
 	LicenseConfig,
