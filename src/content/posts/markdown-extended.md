@@ -1,7 +1,7 @@
 ---
 title: Markdown Extended Features
-published: 2024-05-01
-updated: 2024-11-29
+published: 2026-02-21
+updated: 2026-02-21
 description: 'markdown in fuwari 教程'
 image: ''
 tags: [Demo, Example, Markdown, Fuwari]
