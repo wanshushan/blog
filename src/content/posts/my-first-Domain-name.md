@@ -1,5 +1,5 @@
 ---
-title: my-first-Domain-name
+title: my first Domain name
 published: 2026-02-23
 description: ''
 image: ''
@@ -10,6 +10,7 @@ lang: ''
 ---
 
 # 拥有了人生第一个自己的域名！
-
+wow！
 > wowowowowow!ヾ(≧▽≦*)o
+> 
 > 太酷啦！
