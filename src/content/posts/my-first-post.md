@@ -3,8 +3,8 @@ title: My first blog post
 published: 2026-02-22
 description: ''
 image: ''
-tags: [生活]
-category: '生活'
+tags: [日常]
+category: '日常'
 draft: false 
 lang: ''
 ---

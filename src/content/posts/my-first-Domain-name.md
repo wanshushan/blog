@@ -1,10 +1,10 @@
 ---
 title: my first Domain name
-published: 2026-02-23
+published: 2026-02-23T11:00:00
 description: ''
 image: ''
 tags: [域名 , 生活 , 建站]
-category: ''
+category: '日常'
 draft: false 
 lang: ''
 ---

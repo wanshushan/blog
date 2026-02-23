@@ -5,7 +5,7 @@ updated: 2026-02-21
 description: 'markdown in fuwari 教程'
 image: ''
 tags: [Demo, Example, Markdown, Fuwari]
-category: 'Examples'
+category: '示例'
 draft: false 
 ---
 
