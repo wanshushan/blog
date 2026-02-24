@@ -33,6 +33,10 @@ const UMAMI_CONFIG = {
     shareToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaGFyZUlkIjoiOGQ5NWExNzAtYmY5YS00ZmE4LWJmNmMtNGIyNjQzMGU0NDFlIiwid2Vic2l0ZUlkIjoiY2ZlYWRlZjYtZmUzMi00N2E3LTk5YmItODFiZGFjNTc3ZTQ0IiwicGFyYW1ldGVycyI6eyJ1dG0iOmZhbHNlLCJnb2FscyI6ZmFsc2UsImV2ZW50cyI6dHJ1ZSwiY29tcGFyZSI6ZmFsc2UsImZ1bm5lbHMiOmZhbHNlLCJyZXZlbnVlIjpmYWxzZSwiam91cm5leXMiOmZhbHNlLCJvdmVydmlldyI6dHJ1ZSwicmVhbHRpbWUiOnRydWUsInNlc3Npb25zIjpmYWxzZSwiYnJlYWtkb3duIjpmYWxzZSwicmV0ZW50aW9uIjpmYWxzZSwiYXR0cmlidXRpb24iOmZhbHNlfSwiaWF0IjoxNzcxODQ3OTE2fQ.dF16fEajDQgYT0ZkZfo3fMWaxNYjIlMQxuJCKvyOMpo'
 };
 
+const STATS_CACHE_KEY = "umami-stats-cache-v1";
+const STATS_CACHE_TTL = 10 * 60 * 1000;
+let hasFetchedStats = false;
+
 function formatNumber(num: number): string {
     if (num >= 1000000) {
         return (num / 1000000).toFixed(1) + 'M';
@@ -43,7 +47,18 @@ function formatNumber(num: number): string {
 }
 
 async function fetchUmamiStats() {
+    if (hasFetchedStats) return;
     try {
+        const cachedRaw = sessionStorage.getItem(STATS_CACHE_KEY);
+        if (cachedRaw) {
+            const cached = JSON.parse(cachedRaw) as { timestamp: number; data: { pageviews: number; visits: number; visitors: number } };
+            if (Date.now() - cached.timestamp < STATS_CACHE_TTL) {
+                applyStats(cached.data);
+                hasFetchedStats = true;
+                return;
+            }
+        }
+
         const endAt = Date.now();
         const startAt = 0;
 
@@ -62,21 +77,14 @@ async function fetchUmamiStats() {
         }
 
         const data = await response.json();
-        const pageviewsElement = document.getElementById('total-pageviews');
-        const visitsElement = document.getElementById('total-visits');
-        const visitorsElement = document.getElementById('total-visitors');
-
-        if (pageviewsElement) {
-            pageviewsElement.textContent = formatNumber(data.pageviews || 0);
-        }
-
-        if (visitsElement) {
-            visitsElement.textContent = formatNumber(data.visits || 0);
-        }
-
-        if (visitorsElement) {
-            visitorsElement.textContent = formatNumber(data.visitors || 0);
-        }
+        const normalizedData = {
+            pageviews: data.pageviews || 0,
+            visits: data.visits || 0,
+            visitors: data.visitors || 0,
+        };
+        applyStats(normalizedData);
+        sessionStorage.setItem(STATS_CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data: normalizedData }));
+        hasFetchedStats = true;
 
     } catch (error) {
         console.error('获取Umami统计数据失败:', error);
@@ -91,9 +99,36 @@ async function fetchUmamiStats() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', fetchUmamiStats);
+function applyStats(data: { pageviews: number; visits: number; visitors: number }) {
+    const pageviewsElement = document.getElementById('total-pageviews');
+    const visitsElement = document.getElementById('total-visits');
+    const visitorsElement = document.getElementById('total-visitors');
+
+    if (pageviewsElement) pageviewsElement.textContent = formatNumber(data.pageviews || 0);
+    if (visitsElement) visitsElement.textContent = formatNumber(data.visits || 0);
+    if (visitorsElement) visitorsElement.textContent = formatNumber(data.visitors || 0);
+}
+
+function setupUmamiStatsObserver() {
+    const target = document.getElementById('umami-stats');
+    if (!target) return;
+
+    const observer = new IntersectionObserver((entries, currentObserver) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+            void fetchUmamiStats();
+            currentObserver.disconnect();
+        }
+    }, { rootMargin: '150px 0px' });
+
+    observer.observe(target);
+}
+
+document.addEventListener('DOMContentLoaded', setupUmamiStatsObserver);
 
 if (window.swup) {
-    window.swup.hooks.on('page:view', fetchUmamiStats);
+    window.swup.hooks.on('page:view', () => {
+        hasFetchedStats = false;
+        setupUmamiStatsObserver();
+    });
 }
 </script>

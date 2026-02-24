@@ -19,7 +19,7 @@ export const siteConfig: SiteConfig = {
 	},
 	banner: {
 		enable: true, // Display a banner image on the top of the homepage and post pages
-		src: "assets/images/1.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+		src: "assets/images/1.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
 		credit: {
 			enable: false, // Display the credit text of the banner image
@@ -55,7 +55,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "assets/images/n2.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "assets/images/n2.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "wanshushan",
 	bio: "A blog about life and code.",
 	links: [

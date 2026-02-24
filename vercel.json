@@ -1,1 +1,31 @@
-{}
+{
+	"headers": [
+		{
+			"source": "/_astro/(.*)",
+			"headers": [
+				{
+					"key": "Cache-Control",
+					"value": "public, max-age=31536000, immutable"
+				}
+			]
+		},
+		{
+			"source": "/(.*)\\.(css|js|mjs|woff2|woff|ttf|otf|svg|webp|avif|png|jpg|jpeg|gif|ico)",
+			"headers": [
+				{
+					"key": "Cache-Control",
+					"value": "public, max-age=2592000, stale-while-revalidate=86400"
+				}
+			]
+		},
+		{
+			"source": "/(.*)",
+			"headers": [
+				{
+					"key": "Cache-Control",
+					"value": "public, max-age=0, must-revalidate"
+				}
+			]
+		}
+	]
+}

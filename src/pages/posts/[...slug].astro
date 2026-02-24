@@ -101,7 +101,8 @@ const jsonLd = {
             <!-- always show cover as long as it has one -->
 
             {entry.data.image &&
-                <ImageWrapper id="post-cover" src={entry.data.image} basePath={path.join("content/posts/", getDir(entry.id))} class="mb-8 rounded-xl banner-container onload-animation"/>
+                <ImageWrapper id="post-cover" src={entry.data.image} basePath={path.join("content/posts/", getDir(entry.id))} class="mb-8 rounded-xl banner-container onload-animation"
+                              sizes="(max-width: 768px) 100vw, 800px" widths={[480, 768, 1024, 1280, 1600]} loading="eager" fetchpriority="high"/>
             }
 
 
