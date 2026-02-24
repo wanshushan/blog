@@ -13,24 +13,32 @@ export const siteConfig: SiteConfig = {
 	subtitle: "blog",
 	lang: "zh_CN", // Language code, e.g. 'en', 'zh_CN', 'ja', etc.
 	// pinned: z.boolean().optional().default(false),
+	// 主题颜色配置
 	themeColor: {
 		hue: 250, // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
 		fixed: true, // Hide the theme color picker for visitors
 	},
+	// 横幅图片配置
 	banner: {
-		enable: true, // Display a banner image on the top of the homepage and post pages
+		enable: true, // Display a banner image on the top of the homepage and post pages（开关）
 		src: "assets/images/1.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
 		credit: {
-			enable: false, // Display the credit text of the banner image
-			text: "", // Credit text to be displayed
+			enable: false, // Display the credit text of the banner image（是否显示版权信息）
+			text: "", // Credit text to be displayed (e.g. "Photo by XXX on Unsplash")（版权信息文本，例如“Photo by XXX on Unsplash”）
 			url: "", // (Optional) URL link to the original artwork or artist's page
 		},
 	},
+	// 目录配置
 	toc: {
-		enable: true, // Display the table of contents on the right side of the post
-		depth: 2, // Maximum heading depth to show in the table, from 1 to 3
+		enable: true, // Display the table of contents on the right side of the post (目录开关，开启后在文章右侧显示目录)
+		depth: 3, // Maximum heading depth to show in the table, from 1 to 3 
 	},
+	// 开关：是否启用响应式图片（srcset/sizes），以减少不同设备上的传输
+	image: {
+		adaptive: false, // Enable responsive images (srcset/sizes) to reduce transfer on different devices
+	},
+	// 网站图标配置
 	favicon: [
 		// Leave this array empty to use the default favicon
 		{
@@ -40,7 +48,7 @@ export const siteConfig: SiteConfig = {
 		},
 	],
 };
-
+// top栏配置
 export const navBarConfig: NavBarConfig = {
 	links: [
 		LinkPreset.Home,
@@ -53,7 +61,7 @@ export const navBarConfig: NavBarConfig = {
 		},
 	],
 };
-
+// 右侧个人信息配置
 export const profileConfig: ProfileConfig = {
 	avatar: "assets/images/n2.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "wanshushan",

@@ -1,5 +1,6 @@
 ---
 import path from "node:path";
+import { siteConfig } from "../../config";
 
 interface Props {
 	id?: string;
@@ -62,9 +63,11 @@ if (isLocal) {
 
 const imageClass = "w-full h-full object-cover";
 const imageStyle = `object-position: ${position}`;
+const responsiveSizes = siteConfig.image.adaptive ? sizes : undefined;
+const responsiveWidths = siteConfig.image.adaptive ? widths : undefined;
 ---
 <div id={id} class:list={[className, 'overflow-hidden relative']}>
     <div class="transition absolute inset-0 dark:bg-black/10 bg-opacity-50 pointer-events-none"></div>
-	{isLocal && img && <Image src={img} alt={alt || ""} class={imageClass} style={imageStyle} sizes={sizes} widths={widths} loading={loading} decoding={decoding} fetchpriority={fetchpriority}/>}
+	{isLocal && img && <Image src={img} alt={alt || ""} class={imageClass} style={imageStyle} sizes={responsiveSizes} widths={responsiveWidths} loading={loading} decoding={decoding} fetchpriority={fetchpriority}/>}
 	{!isLocal && <img src={isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle} loading={loading} decoding={decoding} fetchpriority={fetchpriority}/>}
 </div>
