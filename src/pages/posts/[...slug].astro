@@ -79,7 +79,10 @@ const jsonLd = {
                     md:before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
                     before:absolute before:top-[0.75rem] before:left-[-1.125rem]
                 ">
-                    {entry.data.title}
+                    <span class="inline-flex items-center gap-2">
+                        {entry.data.title}
+                        {entry.data.pinned && <Icon name="fa6-regular:bookmark" class="text-[1.4rem] text-[var(--primary)] translate-y-[1px]"></Icon>}
+                    </span>
                 </div>
             </div>
 

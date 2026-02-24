@@ -7,6 +7,7 @@ image: ''
 tags: [Demo, Example, Markdown, Fuwari]
 category: '示例'
 draft: false 
+pinned: false
 ---
 
 ## GitHub Repository Cards
