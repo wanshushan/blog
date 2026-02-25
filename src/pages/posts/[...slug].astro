@@ -1,7 +1,9 @@
 ---
+
 import path from "node:path";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
+//
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
@@ -9,6 +11,8 @@ import { getSortedPosts } from "@utils/content-utils";
 import { getDir, getPostUrlBySlug } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 import { licenseConfig } from "src/config";
+// 引入评论组件
+import Giscus from "../../components/misc/Giscus.astro";
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
 import { profileConfig, siteConfig } from "../../config";
@@ -111,6 +115,16 @@ const jsonLd = {
             </Markdown>
 
             {licenseConfig.enable && <License title={entry.data.title} slug={entry.slug} pubDate={entry.data.published} class="mb-6 rounded-xl license-container onload-animation"></License>}
+            
+             <!-- 评论组件 -->
+             <!-- 参数在https://giscus.app/zh-CN上找 -->
+            <Giscus
+                repo="wanshushan/wanshushan-blog-comments"
+                repoId="R_kgDORYt6mw"
+                category="Announcements"
+                categoryId="DIC_kwDORYt6m84C3MHg"
+                lang="zh-CN"
+            />
 
         </div>
     </div>
