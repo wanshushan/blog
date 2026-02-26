@@ -35,7 +35,7 @@
 {
     "title": "wanshushan",
     "imgurl": "https://blog.wanshushan.top/favicon/icon.png",
-    "desc": "wanshushan的温暖小家",
+    "desc": "wanshushanの小世界",
     "siteurl": "https://blog.wanshushan.top",
     "tags": ["个人博客"]
 }
