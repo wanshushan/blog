@@ -1,6 +1,6 @@
 ---
 
-import { getEntry, render } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 import Giscus from "@components/misc/Giscus.astro";
 import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "../i18n/i18nKey";
@@ -9,7 +9,18 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
 
 const friendsPosttop = await getEntry("spec", "friendstop");
 const friendsPostbottom = await getEntry("spec", "friendsbottom");
-const friendsConfig = await getEntry("spec", "friends_config");
+const specEntries = await getCollection("spec");
+const friendsConfig =
+    specEntries.find((entry) => entry.id === "friends_config") ??
+    specEntries.find((entry) => entry.id === "friends_config.json") ??
+    specEntries.find((entry) => entry.id.startsWith("friends_config."));
+
+if (!friendsConfig) {
+    const specIds = specEntries.map((entry) => entry.id).join(", ");
+    console.warn(
+        `[friends] Friends config not found in collection "spec". Tried: friends_config / friends_config.json / friends_config.*. Available entries: ${specIds || "(none)"}`,
+    );
+}
 
 if (!friendsPosttop) {
 	throw new Error("Friends top page content not found");
@@ -19,13 +30,9 @@ if (!friendsPostbottom) {
 	throw new Error("Friends bottom page content not found");
 }
 
-if (!friendsConfig) {
-	throw new Error("Friends config not found");
-}
-
 const { Content: Top } = await render(friendsPosttop);
 const { Content: Bottom } = await render(friendsPostbottom);
-const items = friendsConfig.data.friends;
+const items = friendsConfig?.data.friends ?? [];
 ---
 <MainGridLayout title={i18n(I18nKey.friends)} description={i18n(I18nKey.friends)}>
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
