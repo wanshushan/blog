@@ -69,6 +69,7 @@ class TableOfContents extends HTMLElement {
     activeIndicator: HTMLElement | null = null;
     updateScheduled = false;
     swupHookBound = false;
+    initStarted = false;
 
     constructor() {
         super();
@@ -227,10 +228,48 @@ class TableOfContents extends HTMLElement {
         this.setWidgetVisibility(true);
     };
 
-    handlePageView = () => {
+    refreshTOC = () => {
         this.rebuildFromPageContent();
         this.fallback();
         this.update();
+    };
+
+    scheduleRefreshAfterLayout = () => {
+        requestAnimationFrame(() => {
+            this.refreshTOC();
+        });
+    };
+
+    waitForContentAnimation = (callback: () => void) => {
+        const prose = document.querySelector<HTMLElement>("#swup-container .prose");
+        if (!prose) {
+            callback();
+            return;
+        }
+
+        const style = window.getComputedStyle(prose);
+        const animationName = style.animationName;
+        const animationDuration = Number.parseFloat(style.animationDuration);
+        const hasAnimation = animationName !== "none" && Number.isFinite(animationDuration) && animationDuration > 0;
+
+        if (!hasAnimation) {
+            callback();
+            return;
+        }
+
+        let called = false;
+        const run = () => {
+            if (called) return;
+            called = true;
+            callback();
+        };
+
+        prose.addEventListener("animationend", run, { once: true });
+        window.setTimeout(run, Math.max(500, animationDuration * 1000 + 120));
+    };
+
+    handlePageView = () => {
+        this.waitForContentAnimation(() => this.scheduleRefreshAfterLayout());
     };
 
     bindSwupHook = () => {
@@ -381,20 +420,14 @@ class TableOfContents extends HTMLElement {
     };
 
     connectedCallback() {
-        // wait for the onload animation to finish, which makes the `getBoundingClientRect` return correct values
-        const element = document.querySelector('#swup-container .prose');
-        if (element) {
-            element.addEventListener('animationend', () => {
-                this.init();
-            }, { once: true });
-        } else {
-            this.init();
-        }
-
+        this.waitForContentAnimation(() => this.init());
         this.bindSwupHook();
     };
 
     init() {
+        if (this.initStarted) return;
+        this.initStarted = true;
+
         this.tocEl = document.getElementById(
             "toc-inner-wrapper"
         );
@@ -408,10 +441,7 @@ class TableOfContents extends HTMLElement {
             capture: true,
         });
 
-        this.rebuildFromPageContent();
-
-        this.fallback();
-        this.update();
+        this.scheduleRefreshAfterLayout();
     };
 
     disconnectedCallback() {

@@ -1,0 +1,41 @@
+{
+	"friends": [
+		{
+			"title": "Wer Blog",
+			"imgurl": " https://blog.isyyo.com/favicon/logo.png",
+			"desc": "The only way to do great is to love what you do.|邮箱: i@hiwer.cn",
+			"siteurl": "https://blog.isyyo.com/",
+			"tags": ["框架"]
+		},
+		{
+			"title": "AULyPcのBlog",
+			"imgurl": "https://blog.aulypc0x0.online/favicon/favicon_amiya.webp",
+			"desc": "今日も生きててえらい ☁",
+			"siteurl": "https://blog.aulypc0x0.online/",
+			"tags": ["个人博客"]
+		},
+		{
+			"title": "藤君的小窝",
+			"imgurl": "https://blog.stivine.fun/favicon/avatar.jpg",
+			"desc": "温馨暖暖的角落",
+			"siteurl": "https://blog.stivine.fun/",
+			"tags": ["个人博客"]
+		},
+		{
+			"title": "wanshushan",
+			"imgurl": "https://blog.wanshushan.top/favicon/icon.png",
+			"desc": "wanshushan的温暖小家",
+			"siteurl": "blog.wanshushan.top",
+			"tags": ["个人博客"]
+		}
+	],
+	"示例：": [
+		{
+			"title": "示例友链",
+			"imgurl": "https://example.com/favicon.ico这是图标链接",
+			"desc": "这是一个示例友链的描述。显示内容应当填写在friends数组中",
+			"siteurl": "https://example.com/这是网站链接",
+			"tags": ["示例", "测试"]
+		}
+	]
+}

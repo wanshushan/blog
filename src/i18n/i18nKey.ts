@@ -32,6 +32,9 @@ enum I18nKey {
 	author = "author",
 	publishedAt = "publishedAt",
 	license = "license",
+
+	// 友链
+	friends = "friends",
 }
 
 export default I18nKey;
