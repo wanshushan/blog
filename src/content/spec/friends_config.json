@@ -34,7 +34,29 @@
 			"desc": "前途似海，来日方长",
 			"siteurl": "https://blog.tianhw.top",
 			"tags": ["个人博客"]
+		},
+		{
+			"title": "qif711的博客",
+			"imgurl": "https://q1.qlogo.cn/g?b=qq&nk=3258266043&s=640",
+			"desc": "记住笑着跑完 看半路就放弃的那些都是脑残",
+			"siteurl": "https://www.cnblogs.com/qif711",
+			"tags": ["个人博客"]
+		},
+		{
+			"title": "HNFHNF",
+			"imgurl": "https://q2.qlogo.cn/g?b=qq&nk=3037886495&s=640",
+			"desc": "Acmer",
+			"siteurl": "http://acm.i00.icu/",
+			"tags": ["个人博客"]
+		},
+		{
+			"title": "leocodex",
+			"imgurl": "https://q2.qlogo.cn/g?b=qq&nk=975287928&s=640",
+			"desc": "恰逢春日,你笑一语,风暖一句",
+			"siteurl": "https://blog.nowcoder.net/leocodex",
+			"tags": ["个人博客"]
 		}
+
 	],
 	"示例：": [
 		{
