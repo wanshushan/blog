@@ -33,6 +33,9 @@ enum I18nKey {
 	publishedAt = "publishedAt",
 	license = "license",
 
+	// 摄影
+	photos = "photos",
+
 	// 友链
 	friends = "friends",
 }

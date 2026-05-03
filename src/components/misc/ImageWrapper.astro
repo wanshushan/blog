@@ -14,6 +14,7 @@ interface Props {
 	loading?: "eager" | "lazy";
 	decoding?: "sync" | "async" | "auto";
 	fetchpriority?: "high" | "low" | "auto";
+	raw?: boolean;
 }
 
 import { Image } from "astro:assets";
@@ -30,6 +31,7 @@ const {
 	loading = "lazy",
 	decoding = "async",
 	fetchpriority = "auto",
+	raw = false,
 } = Astro.props;
 const className = Astro.props.class;
 
@@ -68,6 +70,7 @@ const responsiveWidths = siteConfig.image.adaptive ? widths : undefined;
 ---
 <div id={id} class:list={[className, 'overflow-hidden relative']}>
     <div class="transition absolute inset-0 dark:bg-black/10 bg-opacity-50 pointer-events-none"></div>
-	{isLocal && img && <Image src={img} alt={alt || ""} class={imageClass} style={imageStyle} sizes={responsiveSizes} widths={responsiveWidths} loading={loading} decoding={decoding} fetchpriority={fetchpriority}/>}
+	{isLocal && img && raw && <img src={img.src} alt={alt || ""} class={imageClass} style={imageStyle} loading={loading} decoding={decoding} fetchpriority={fetchpriority}/>}
+	{isLocal && img && !raw && <Image src={img} alt={alt || ""} class={imageClass} style={imageStyle} sizes={responsiveSizes} widths={responsiveWidths} loading={loading} decoding={decoding} fetchpriority={fetchpriority}/>}
 	{!isLocal && <img src={isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle} loading={loading} decoding={decoding} fetchpriority={fetchpriority}/>}
 </div>

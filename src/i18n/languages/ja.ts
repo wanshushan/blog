@@ -35,4 +35,10 @@ export const ja: Translation = {
 	[Key.author]: "作者",
 	[Key.publishedAt]: "公開日",
 	[Key.license]: "ライセンス",
+
+	// 写真
+	[Key.photos]: "写真",
+
+	// 友達
+	[Key.friends]: "友達",
 };

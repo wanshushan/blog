@@ -1,0 +1,19 @@
+---
+import PhotoPage from "@components/PhotoPage.astro";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getSortedPhotos } from "@utils/photo-utils";
+
+const allPhotos = await getSortedPhotos();
+
+// Simulate a page object for PhotoPage compatibility
+const page = {
+    data: allPhotos,
+    currentPage: 1,
+    lastPage: 1,
+    url: { current: "/photos/", prev: undefined, next: undefined },
+};
+---
+
+<MainGridLayout>
+    <PhotoPage page={page}></PhotoPage>
+</MainGridLayout>

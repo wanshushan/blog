@@ -52,6 +52,8 @@ export const siteConfig: SiteConfig = {
 export const navBarConfig: NavBarConfig = {
 	links: [
 		LinkPreset.Home,
+		// 摄影
+		LinkPreset.Photos,
 		LinkPreset.Archive,
 		LinkPreset.About,
 		// 友链

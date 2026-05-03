@@ -35,4 +35,10 @@ export const th: Translation = {
 	[Key.author]: "ผู้เขียน",
 	[Key.publishedAt]: "เผยแพร่เมื่อ",
 	[Key.license]: "สัญญาอนุญาต",
+
+	// การถ่ายภาพ
+	[Key.photos]: "ภาพถ่าย",
+
+	// เพื่อน
+	[Key.friends]: "เพื่อน",
 };

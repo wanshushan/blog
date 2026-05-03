@@ -122,5 +122,9 @@
         overflow-x: auto;
         margin: 1em 0;
     }
+
+    .raw-image {
+        @apply rounded-xl my-2 max-w-full h-auto;
+    }
     
 }

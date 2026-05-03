@@ -8,9 +8,10 @@ import { getSortedPosts } from "../utils/content-utils";
 
 export const getStaticPaths = (async ({ paginate }) => {
 	const allBlogPosts = await getSortedPosts();
-	return paginate(allBlogPosts, { pageSize: PAGE_SIZE });
+	// Only generate pages 2+ (page 1 is handled by index.astro)
+	const pages = paginate(allBlogPosts, { pageSize: PAGE_SIZE });
+	return pages.filter((p) => p.params.page && p.params.page !== "1");
 }) satisfies GetStaticPaths;
-// https://github.com/withastro/astro/issues/6507#issuecomment-1489916992
 
 const { page } = Astro.props;
 

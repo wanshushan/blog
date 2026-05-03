@@ -35,4 +35,10 @@ export const es: Translation = {
 	[Key.author]: "Autor",
 	[Key.publishedAt]: "Publicado el",
 	[Key.license]: "Licencia",
+
+	// Fotografía
+	[Key.photos]: "Fotos",
+
+	// Amigos
+	[Key.friends]: "Amigos",
 };
