@@ -1,7 +1,7 @@
 ---
-title: 闯祸了
+title: 闯祸了（其实没有）
 published: 2026-04-19T23:20:00
-description: '我好像闯祸了(´。＿。｀)'
+description: '我好像闯祸了(´。＿。｀) （其实没闯祸，自己吓自己~）'   
 image: ''
 tags: [忏悔, 反思]
 category: '日常'
