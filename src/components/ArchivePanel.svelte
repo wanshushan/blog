@@ -3,16 +3,19 @@ import { onMount } from "svelte";
 
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
-import { getPostUrlBySlug } from "../utils/url-utils";
+import { getPostUrlBySlug, getPhotoUrlBySlug } from "../utils/url-utils";
 
 export let tags: string[];
 export let categories: string[];
 export let sortedPosts: Post[] = [];
+export let date: string | null = null;
+export let mode: string = "posts";
 
 const params = new URLSearchParams(window.location.search);
 tags = params.has("tag") ? params.getAll("tag") : [];
 categories = params.has("category") ? params.getAll("category") : [];
 const uncategorized = params.get("uncategorized");
+date = params.get("date");
 
 interface Post {
 	slug: string;
@@ -41,6 +44,15 @@ function formatTag(tagList: string[]) {
 	return tagList.map((t) => `#${t}`).join(" ");
 }
 
+function getItemUrl(slug: string): string {
+	return mode === "photos" ? getPhotoUrlBySlug(slug) : getPostUrlBySlug(slug);
+}
+
+function formatDateFilter(d: string): string {
+	const parts = d.split("-");
+	return `${parts[0]}年${Number.parseInt(parts[1])}月${Number.parseInt(parts[2])}日`;
+}
+
 onMount(async () => {
 	let filteredPosts: Post[] = sortedPosts;
 
@@ -60,6 +72,14 @@ onMount(async () => {
 
 	if (uncategorized) {
 		filteredPosts = filteredPosts.filter((post) => !post.data.category);
+	}
+
+	if (date) {
+		filteredPosts = filteredPosts.filter((post) => {
+			const postDate = new Date(post.data.published);
+			const postDateStr = `${postDate.getFullYear()}-${String(postDate.getMonth() + 1).padStart(2, "0")}-${String(postDate.getDate()).padStart(2, "0")}`;
+			return postDateStr === date;
+		});
 	}
 
 	const grouped = filteredPosts.reduce(
@@ -86,6 +106,16 @@ onMount(async () => {
 </script>
 
 <div class="card-base px-8 py-6">
+    {#if date}
+        <div class="flex items-center gap-2 mb-4 px-2">
+            <span class="text-sm text-50">
+                {#if mode === "photos"}筛选相册：{:else}筛选文章：{/if}
+                <span class="font-bold text-75">{formatDateFilter(date)}</span>
+            </span>
+            <a href={mode === "photos" ? "/archive/?mode=photos" : "/archive/"}
+               class="text-xs text-[var(--primary)] hover:underline">清除筛选</a>
+        </div>
+    {/if}
     {#each groups as group}
         <div>
             <div class="flex flex-row w-full items-center h-[3.75rem]">
@@ -105,7 +135,7 @@ onMount(async () => {
 
             {#each group.posts as post}
                 <a
-                        href={getPostUrlBySlug(post.slug)}
+                        href={getItemUrl(post.slug)}
                         aria-label={post.data.title}
                         class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial]"
                 >

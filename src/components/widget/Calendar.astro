@@ -1,0 +1,236 @@
+---
+import { url } from "@utils/url-utils";
+import WidgetLayout from "./WidgetLayout.astro";
+
+interface Props {
+    postDates: string[];
+    photoDates: string[];
+    class?: string;
+    style?: string;
+}
+
+const { postDates, photoDates, class: className, style } = Astro.props;
+const baseUrl = url("/archive/");
+---
+
+<WidgetLayout name="日历" id="calendar-widget" class:list={[className]} {style}>
+    <div
+        id="calendar-container"
+        data-post-dates={JSON.stringify(postDates)}
+        data-photo-dates={JSON.stringify(photoDates)}
+        data-base-url={baseUrl}
+        class="select-none"
+    >
+        <!-- Month navigation -->
+        <div class="flex items-center justify-between mb-2 px-1">
+            <button
+                id="calendar-prev"
+                class="w-7 h-7 rounded-md flex items-center justify-center
+                       hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)]
+                       transition text-neutral-500 dark:text-neutral-400"
+                aria-label="上个月"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <div id="calendar-month-label" class="text-sm font-bold text-neutral-900 dark:text-neutral-100"></div>
+            <button
+                id="calendar-next"
+                class="w-7 h-7 rounded-md flex items-center justify-center
+                       hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)]
+                       transition text-neutral-500 dark:text-neutral-400"
+                aria-label="下个月"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+        <!-- Weekday header -->
+        <div class="grid grid-cols-7 text-center text-xs text-neutral-500 dark:text-neutral-400 mb-1">
+            <div>日</div>
+            <div>一</div>
+            <div>二</div>
+            <div>三</div>
+            <div>四</div>
+            <div>五</div>
+            <div>六</div>
+        </div>
+        <!-- Calendar grid -->
+        <div id="calendar-grid" class="grid grid-cols-7 text-center"></div>
+    </div>
+</WidgetLayout>
+
+<script>
+    let swupHookBound = false;
+
+    function resolveMode(): { mode: "posts" | "photos"; dateSet: Set<string> } {
+        const container = document.getElementById("calendar-container");
+        const baseUrl = container?.dataset.baseUrl || "/archive/";
+
+        let postDateSet: Set<string>;
+        let photoDateSet: Set<string>;
+        try {
+            postDateSet = new Set(JSON.parse(container?.dataset.postDates || "[]"));
+        } catch {
+            postDateSet = new Set();
+        }
+        try {
+            photoDateSet = new Set(JSON.parse(container?.dataset.photoDates || "[]"));
+        } catch {
+            photoDateSet = new Set();
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const modeParam = params.get("mode");
+        const pathname = window.location.pathname;
+
+        let mode: "posts" | "photos" = "posts";
+        if (modeParam === "photos" || pathname.startsWith("/photos/")) {
+            mode = "photos";
+        }
+
+        return {
+            mode,
+            dateSet: mode === "photos" ? photoDateSet : postDateSet,
+        };
+    }
+
+    function initCalendar() {
+        const container = document.getElementById("calendar-container");
+        const widget = document.querySelector('[data-id="calendar-widget"]');
+        if (!container || !widget) return;
+
+        // Show/hide calendar based on current URL
+        const pathname = window.location.pathname;
+        const visible =
+            pathname === "/" ||
+            /^\/\d+\/$/.test(pathname) ||
+            pathname === "/photos/" ||
+            pathname.startsWith("/archive");
+
+        widget.classList.toggle("hidden", !visible);
+        if (!visible) return;
+
+        const { mode, dateSet } = resolveMode();
+        const baseUrl = container.dataset.baseUrl || "/archive/";
+
+        const today = new Date();
+        const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+        let currentYear = today.getFullYear();
+        let currentMonth = today.getMonth(); // 0-indexed
+
+        const monthLabel = document.getElementById("calendar-month-label");
+        const grid = document.getElementById("calendar-grid");
+        const prevBtn = document.getElementById("calendar-prev");
+        const nextBtn = document.getElementById("calendar-next");
+
+        if (!monthLabel || !grid || !prevBtn || !nextBtn) return;
+
+        function render() {
+            if (!monthLabel || !grid) return;
+
+            // Update month label
+            monthLabel.textContent = `${currentYear}年${currentMonth + 1}月`;
+
+            // Calculate calendar grid
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const startDayOfWeek = firstDay.getDay(); // 0=Sunday
+            const daysInMonth = lastDay.getDate();
+
+            // Build grid cells
+            let html = "";
+
+            // Leading empty cells
+            for (let i = 0; i < startDayOfWeek; i++) {
+                html += '<div class="h-7"></div>';
+            }
+
+            // Day cells
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+                const isToday = dateStr === todayStr;
+                const hasContent = dateSet.has(dateStr);
+
+                let classes = "h-7 flex items-center justify-center text-xs rounded-md leading-7 ";
+
+                if (isToday) {
+                    classes += "text-[var(--primary)] font-bold rounded-md outline outline-[var(--primary)] -outline-offset-[1px] outline-2 ";
+                } else if (hasContent) {
+                    classes += "text-neutral-900 dark:text-neutral-100 ";
+                } else {
+                    classes += "text-neutral-400 dark:text-neutral-500 ";
+                }
+
+                if (hasContent) {
+                    classes += "font-bold cursor-pointer hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] ";
+                    const separator = baseUrl.includes("?") ? "&" : "?";
+                    const href =
+                        mode === "photos"
+                            ? `${baseUrl}${separator}date=${dateStr}&mode=photos`
+                            : `${baseUrl}${separator}date=${dateStr}`;
+                    html += `<div class="${classes}" data-date="${dateStr}" data-href="${href}">${day}</div>`;
+                } else {
+                    classes += "cursor-default ";
+                    html += `<div class="${classes}">${day}</div>`;
+                }
+            }
+
+            grid.innerHTML = html;
+
+            // Add click handlers for dates with content
+            grid.querySelectorAll("[data-href]").forEach((el) => {
+                el.addEventListener("click", () => {
+                    const href = (el as HTMLElement).dataset.href;
+                    if (href) {
+                        window.location.href = href;
+                    }
+                });
+            });
+        }
+
+        // Remove old listeners before re-attaching to prevent duplicates
+        const newPrevBtn = prevBtn.cloneNode(true) as HTMLElement;
+        const newNextBtn = nextBtn.cloneNode(true) as HTMLElement;
+        prevBtn.parentNode?.replaceChild(newPrevBtn, prevBtn);
+        nextBtn.parentNode?.replaceChild(newNextBtn, nextBtn);
+
+        newPrevBtn.addEventListener("click", () => {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            render();
+        });
+
+        newNextBtn.addEventListener("click", () => {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            render();
+        });
+
+        render();
+    }
+
+    function bindSwupHook() {
+        if (swupHookBound) return;
+        if (window?.swup?.hooks) {
+            window.swup.hooks.on("page:view", initCalendar);
+            swupHookBound = true;
+            return;
+        }
+        document.addEventListener("swup:enable", bindSwupHook, { once: true });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initCalendar();
+        bindSwupHook();
+    });
+</script>

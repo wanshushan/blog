@@ -4,11 +4,28 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getSortedPostsList } from "../utils/content-utils";
+import { getSortedPhotosList } from "../utils/photo-utils";
 
-const sortedPostsList = await getSortedPostsList();
+const mode = Astro.url.searchParams.get("mode");
+const date = Astro.url.searchParams.get("date");
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let sortedPostsList: any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let sortedPhotosList: any;
+
+if (mode === "photos") {
+    sortedPhotosList = await getSortedPhotosList();
+} else {
+    sortedPostsList = await getSortedPostsList();
+}
 ---
 
 <MainGridLayout title={i18n(I18nKey.archive)}>
-    <ArchivePanel sortedPosts={sortedPostsList} client:only="svelte"></ArchivePanel>
+    {mode === "photos" ? (
+        <ArchivePanel sortedPosts={sortedPhotosList!} date={date} mode="photos" client:only="svelte"></ArchivePanel>
+    ) : (
+        <ArchivePanel sortedPosts={sortedPostsList!} date={date} mode="posts" client:only="svelte"></ArchivePanel>
+    )}
 </MainGridLayout>
 

@@ -12,6 +12,8 @@ import {
 	BANNER_HEIGHT_EXTEND,
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
 } from "../constants/constants";
+import { getSortedPostsList } from "../utils/content-utils";
+import { getSortedPhotosList } from "../utils/photo-utils";
 import Layout from "./Layout.astro";
 
 interface Props {
@@ -31,6 +33,28 @@ const {
 	setOGTypeArticle,
 	headings = [],
 } = Astro.props;
+
+// Compute calendar dates at build time so the calendar is always visible
+function formatDate(d: Date): string {
+	const year = d.getFullYear();
+	const month = String(d.getMonth() + 1).padStart(2, "0");
+	const day = String(d.getDate()).padStart(2, "0");
+	return `${year}-${month}-${day}`;
+}
+
+const allPosts = await getSortedPostsList();
+const allPhotos = await getSortedPhotosList();
+const postDates = [...new Set(allPosts.map((p) => formatDate(new Date(p.data.published))))];
+const photoDates = [...new Set(allPhotos.map((p) => formatDate(new Date(p.data.published))))];
+
+// Only show calendar on homepage, photos index, and archive pages
+const pathname = Astro.url.pathname;
+const showCalendar =
+	pathname === "/" ||
+	/\/\d+\/$/.test(pathname) ||
+	pathname === "/photos/" ||
+	pathname.startsWith("/archive");
+
 const hasBannerCredit =
 	siteConfig.banner.enable && siteConfig.banner.credit.enable;
 const hasBannerLink = !!siteConfig.banner.credit.url;
@@ -105,6 +129,9 @@ const mainPanelTop = siteConfig.banner.enable
                 showCategories={false}
                 showTags={false}
                 showTOC={siteConfig.toc.enable}
+                showCalendar={showCalendar}
+                calendarPostDates={postDates}
+                calendarPhotoDates={photoDates}
             ></SideBar>
 
             <div class="footer col-span-1 lg:col-span-3 onload-animation block lg:hidden">
