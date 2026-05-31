@@ -53,10 +53,16 @@
 			"title": "leocodex",
 			"imgurl": "https://q2.qlogo.cn/g?b=qq&nk=975287928&s=640",
 			"desc": "恰逢春日,你笑一语,风暖一句",
-			"siteurl": "https://blog.nowcoder.net/leocodex",
+			"siteurl": "https://www.cnblogs.com/LeoCodex",
+			"tags": ["个人博客"]
+		},
+		{
+			"title": "Lilili加贝",
+			"imgurl": "https://q2.qlogo.cn/g?b=qq&nk=1191357227&s=640",
+			"desc": " (‾◡◝) [building...]",
+			"siteurl": "https://lililijiabei.wanshushan.top",
 			"tags": ["个人博客"]
 		}
-
 	],
 	"示例：": [
 		{

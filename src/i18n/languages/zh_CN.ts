@@ -37,7 +37,7 @@ export const zh_CN: Translation = {
 	[Key.license]: "许可协议",
 
 	// 摄影
-	[Key.photos]: "摄影",
+	[Key.photos]: "相册",
 
 	// 友链
 	[Key.friends]: "友链",
